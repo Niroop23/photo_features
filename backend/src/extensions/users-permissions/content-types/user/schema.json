@@ -71,6 +71,26 @@
       "relation": "oneToMany",
       "target": "api::post.post",
       "mappedBy": "user"
+    },
+    "bio": {
+      "type": "text"
+    },
+    "avatar": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "default": "Unknown Photographer"
+    },
+    "photographerRole": {
+      "type": "string"
+    },
+    "instagram": {
+      "type": "string"
     }
   }
 }
