@@ -14,9 +14,9 @@ import PortfolioPage from "./pages/portfolio/portfolio";
 import IndividualPortfolio from "./pages/portfolio/individualPortfolio";
 import { ThemeProvider } from "./context/ThemeContext";
 import PortfolioLayout from "./pages/portfolio/index";
-import AuthTest from "./pages/AuthTest";
+import AuthTest from "./components/auth/AuthTest";
 
-export default function App() {
+export default function App () {
   return (
     <div>
       <ThemeProvider>
