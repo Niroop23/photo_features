@@ -7,13 +7,27 @@ import { navigateSmooth } from '../../utils/helperFunctions';
 
 function EventsThumb({ event, isOnHomePage = false, thinVariant = false, variant = "scroll" }) {
     const navigate = useNavigate();
-    
+
     const handleEventClick = () => {
         const fromPage = isOnHomePage ? 'home' : 'events';
-        navigateSmooth(navigate, `/events/${event.id}`, fromPage);
+        navigateSmooth(navigate, `/events/${event.EventId}`, fromPage);
     };
-
-    const thumbnailColor = event.thumbnailColor || '#000000';
+    let thumbnailColor = '#b92c2c';
+    let imageUrl =null; // Use the event image if available, otherwise use the noise image
+    if(event.EventId.startsWith("Inci")){
+        thumbnailColor = "#E195AB";
+        imageUrl="https://img.freepik.com/free-photo/3d-modern-background-with-hot-pink-flowing-lines_1048-12263.jpg";
+    }
+    else if(event.EventId.startsWith("PClub")){
+        thumbnailColor = "#FFB4A2";
+        imageUrl="https://placehold.co/200x260";
+    }
+    else if(event.EventId.startsWith("Engi")){
+        thumbnailColor = "#DE3163";
+        imageUrl="https://placehold.co/200x260";
+    }
+    
+    
 
     const formatDateTime = (dateTimeStr) => {
         const date = new Date(dateTimeStr);
@@ -63,7 +77,7 @@ function EventsThumb({ event, isOnHomePage = false, thinVariant = false, variant
                     {/* Title at the top */}
                     <div>
                         <p className="font-playfair text-[24px] md:text-[32px] font-medium leading-[1]">
-                            {event.title}
+                            {event.EventName}
                         </p>
                     </div>
 
@@ -88,12 +102,12 @@ function EventsThumb({ event, isOnHomePage = false, thinVariant = false, variant
                 </div>
 
                 {/* Event Image (if available) */}
-                {event.image && (
+                {imageUrl && (
                     <div className={`relative object-cover object-center h-full
                         ${variant === "scroll" ? "md:w-[200px]" : "md:w-[280px]"}
                         w-full`}
                     >
-                        <img src={event.image} alt={event.title}
+                        <img src={imageUrl} alt={event.EventName}
                             className="absolute inset-0 w-full h-full object-cover rounded-[0_8px_8px_0]"
                         />
                         {/* Overlay To Tint Image */}
@@ -117,13 +131,16 @@ function EventsThumb({ event, isOnHomePage = false, thinVariant = false, variant
 
 EventsThumb.propTypes = {
     event: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
+        id: PropTypes.number.isRequired,
+        createdAt: PropTypes.string,
+        updatedAt: PropTypes.string,
+        publishedAt: PropTypes.string,
+        EventId: PropTypes.string.isRequired,
+        EventName: PropTypes.string.isRequired,
         description: PropTypes.string.isRequired,
         location: PropTypes.string.isRequired,
         dateTime: PropTypes.string.isRequired,
-        image: PropTypes.string,
-        thumbnailColor: PropTypes.string,
+        isPClubEvent: PropTypes.bool.isRequired,
     }).isRequired,
     isOnHomePage: PropTypes.bool,
     thinVariant: PropTypes.bool,
