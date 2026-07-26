@@ -1,5 +1,5 @@
 ############################
-# OS X
+# OS
 ############################
 
 .DS_Store
@@ -9,19 +9,7 @@ Icon
 .Spotlight-V100
 .Trashes
 ._*
-
-
-############################
-# Linux
-############################
-
 *~
-
-
-############################
-# Windows
-############################
-
 Thumbs.db
 ehthumbs.db
 Desktop.ini
@@ -31,9 +19,8 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 
-
 ############################
-# Packages
+# Packages / binaries
 ############################
 
 *.7z
@@ -60,7 +47,6 @@ $RECYCLE.BIN/
 *.out
 *.pid
 
-
 ############################
 # Logs and databases
 ############################
@@ -70,31 +56,21 @@ $RECYCLE.BIN/
 *.sql
 *.sqlite
 *.sqlite3
-
-
-############################
-# Misc.
-############################
-
-*#
-ssl
-.idea
-nbproject
-public/uploads/*
-!public/uploads/.gitkeep
-.tsbuildinfo
-.eslintcache
+logs
+npm-debug.log*
+yarn-debug.log*
+.pnpm-debug.log*
+lerna-debug.log*
 
 ############################
 # Node.js
 ############################
 
+node_modules/
 lib-cov
 lcov.info
 pids
-logs
 results
-node_modules
 .node_history
 
 ############################
@@ -122,6 +98,8 @@ coverage
 ############################
 
 .env
+.env.*
+!.env.example
 license.txt
 exports
 .strapi
@@ -129,3 +107,16 @@ dist
 build
 .strapi-updater.json
 .strapi-cloud.json
+
+############################
+# Uploads and misc
+############################
+
+public/uploads/*
+!public/uploads/.gitkeep
+*#
+ssl
+.idea
+nbproject
+.tsbuildinfo
+.eslintcache

@@ -44,6 +44,34 @@
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "posts"
+    },
+    "photographer": {
+      "type": "string"
+    },
+    "photographerAvatar": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "location": {
+      "type": "string"
+    },
+    "date": {
+      "type": "date"
+    },
+    "camera": {
+      "type": "string"
+    },
+    "lens": {
+      "type": "string"
+    },
+    "settings": {
+      "type": "string"
     }
   }
 }
