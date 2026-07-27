@@ -14,8 +14,9 @@ import PortfolioPage from "./pages/portfolio/portfolio";
 import IndividualPortfolio from "./pages/portfolio/individualPortfolio";
 import { ThemeProvider } from "./context/ThemeContext";
 import PortfolioLayout from "./pages/portfolio/index";
+import AuthTest from "./components/auth/AuthTest";
 
-export default function App() {
+export default function App () {
   return (
     <div>
       <ThemeProvider>
@@ -29,14 +30,13 @@ export default function App() {
                 <Route path=":id" element={<IndividualPortfolio />} />
               </Route>
               <Route path="/photo-reels" element={<PhotoReels />} />
-
               <Route path="/events" element={<Events />}>
                 <Route path=":id" element={<EventPage />} />
               </Route>
               <Route path="/blogs" element={<Blogs />}>
                 <Route path=":id" element={<BlogPage />} />
               </Route>
-
+              <Route path="/auth-test" element={<AuthTest />} />
             </Routes>
           </div>
           <Footer />
