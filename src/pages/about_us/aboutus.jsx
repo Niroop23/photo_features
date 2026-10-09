@@ -214,9 +214,10 @@ function AboutUsPage() {
             ))}
           </div>
         </section>
-
+<br></br>
+<br></br>
         {/* Achievements */}
-        <section className="mt-10 md:mt-14 pb-20 md:pb-28">
+        {/* <section className="mt-10 md:mt-14 pb-20 md:pb-28">
           <p className="text-tertiary uppercase text-sm font-semibold tracking-[0.2em]">
             Achievements
           </p>
@@ -248,7 +249,7 @@ function AboutUsPage() {
           >
             {showAll ? "Show Less" : "View All Achievements"}
           </button>
-        </section>
+        </section> */}
       </div>
     </main>
   );

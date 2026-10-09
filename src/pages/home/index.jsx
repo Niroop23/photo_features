@@ -44,7 +44,7 @@ export default function HomePage() {
             <Landing onJoin={onJoin} specialNotices={specialNotices} />
             {/* Refer to tailwind.config.js for container, container-px and container-px-md variables */}
             <div className="max-w-container px-container-px py-5 mx-auto flex flex-col md:py-7 md:px-container-px-md">
-                <About clubGallery={clubGallery} stats={stats} learnMore={learnMore} />
+                <About clubGallery={clubGallery} stats={[]} learnMore={learnMore} />
                 <Hero photos={topPhotos} />
                 <hr className="my-10 border-1 border-gray-300" />
                 <ClubUpdates events={events} blogs={blogs} />

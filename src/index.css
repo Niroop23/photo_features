@@ -32,3 +32,14 @@
 		transform: translateY(16px);
 	}
 }
+
+.member-grid-transition {
+	animation: member-grid-in 240ms ease-out both;
+}
+
+@keyframes member-grid-in {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+}
