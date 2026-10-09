@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { TeamMember } from "./team_member";
 import { TabContext } from "../../context/TabContext";
-import { useNavigate } from "react-router-dom";
 import { getTeamCardLabel } from "../../utils/candidateRoles";
 
 const CORE_ROLE_ORDER = [
@@ -40,7 +39,6 @@ const isHighlightedMember = (candidate, activeItem) => {
 };
 
 export function TeamShowcase() {
-  const navigate = useNavigate();
   const { candidates, activeItem, searchQuery } = useContext(TabContext);
 
   const matchingCandidates = candidates.filter((candidate) =>
@@ -60,27 +58,6 @@ export function TeamShowcase() {
             matchingCandidates.filter((candidate) => candidate.role === activeItem),
           );
 
-  const goToIndividualPortfolio = (candidate) => {
-    sessionStorage.setItem("scrollPositionY", window.scrollY);
-
-    const openProfile = () => {
-      navigate("/portfolio/", {
-        state: { photographer: candidate },
-      });
-
-      window.requestAnimationFrame(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-      });
-    };
-
-    if (document.startViewTransition) {
-      document.startViewTransition(openProfile);
-      return;
-    }
-
-    openProfile();
-  };
-
   return (
     <div className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -93,7 +70,8 @@ export function TeamShowcase() {
                 role={getTeamCardLabel(candidate)}
                 imageUrl={candidate.avatar}
                 isHighlighted={isHighlightedMember(candidate, activeItem)}
-                onClick={() => goToIndividualPortfolio(candidate)}
+                instagram={candidate.instagram}
+                linkedin={candidate.linkedin}
               />
             ))}
           </div>

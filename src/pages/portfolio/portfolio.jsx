@@ -1,16 +1,8 @@
-import { useLocation } from "react-router-dom";
 import Tabs from "../../components/tabs";
 import { TeamShowcase } from "../../components/team/team_showcase";
 import SearchBar from "../../components/searchbar/index";
-import IndividualPortfolio from "./individualPortfolio";
 
 const PortfolioPage = () => {
-  const location = useLocation();
-
-  if (location.state?.photographer) {
-    return <IndividualPortfolio />;
-  }
-
   return (
     <>
       <div className="mt-11 flex flex-col justify-center items-center gap-y-4 px-4 sm:px-6 lg:px-8">
