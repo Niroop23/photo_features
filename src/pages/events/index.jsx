@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import { Outlet, useParams } from 'react-router';
-import { useState } from 'react';
-import Dropdown from '../../components/filtersort/dropdown';
-import EventsThumb from '../../components/events/eventsThumb';
-import ModularTabs from '../../components/modularTabs';
-import { useEffect } from 'react';
-import { authClient } from '../../components/util/authClient';
-=======
 import { Outlet, useParams, useNavigate } from "react-router";
 import { useState } from "react";
 import Dropdown from "../../components/filtersort/dropdown";
@@ -14,21 +5,14 @@ import EventsThumb from "../../components/events/eventsThumb";
 import ModularTabs from "../../components/modularTabs";
 import { useEffect } from "react";
 import axios from "axios";
->>>>>>> shiv
 
 function Events() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+    const { id } = useParams();
+    
 
-<<<<<<< HEAD
-    const getEvents = async () =>{
-        try{
-            const res = await authClient.get('/gallery/events');
-=======
   const token = localStorage.getItem("authToken");
 
   let user = null;
->>>>>>> shiv
 
   try {
     if (token) {
@@ -79,81 +63,113 @@ function Events() {
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
 
-    if (tabId === "all") {
-      setEventsToShow(events);
-    } else if (tabId === "upcoming") {
-      const upcomingEvents = events.filter(
-        (event) => new Date(event.dateTime) >= new Date(),
-      );
-      const sortedUpcomingEvents = [...upcomingEvents].sort(
-        (a, b) => new Date(a.dateTime) - new Date(b.dateTime),
-      );
-      setEventsToShow(sortedUpcomingEvents);
-    } else if (tabId === "pclub") {
-      const pastEvents = events.filter((event) => event.isPClubEvent);
-      setEventsToShow(pastEvents);
-    } else if (tabId === "nitkevents") {
-      const nitkEvents = events.filter((event) => !event.isPClubEvent);
-      setEventsToShow(nitkEvents);
+    // Reset tab to "upcoming" whenever the user switches categories
+    const handleSelectCategory = (category) => {
+        setSelectedCategory(category);
+        setActiveTab('upcoming');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleBackToCategories = () => {
+        setSelectedCategory(null);
+        setActiveTab('upcoming');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const eventsToShow = useMemo(
+        () => selectedCategory ? filterEvents(events, selectedCategory, activeTab) : [],
+        [events, selectedCategory, activeTab]
+    );
+
+    // Render event detail page when navigated to /events/:id
+    if (id) {
+        return <Outlet />;
     }
   };
 
-  useEffect(() => {
-    handleTabClick(activeTab);
-  }, [events]);
+    const categoryMeta = selectedCategory ? CATEGORY_META[selectedCategory] : null;
 
-  if (id) {
-    return <Outlet />;
-  }
+    return (
+        <div className="max-w-container mx-auto px-container-px md:px-container-px-md py-10 md:py-12">
 
-  return (
-    <div className="max-w-container mx-auto px-container-px md:px-container-px-md py-8">
-      {/* top most section  */}
-      <div className="mt-3 flex flex-col justify-center items-center gap-y-4 px-4 sm:px-6 lg:px-8">
-        <span className="text-center font-bold text-3xl border-[1.2px] border-black rounded-full px-8 py-3 w-auto sm:text-4xl lg:text-5xl">
-          Club Events
-        </span>
-        <span className="text-md opacity-60 sm:text-lg lg:text-xl lg:max-w-2xl text-center">
-          Check out all the events we have planned for you;
-          <br />
-          And the ones we&apos;ve hosted before.
-        </span>
-        {/* tabs part  */}
-        <div className="mt-5">
-          <ModularTabs
-            tabs={navItems}
-            activeTab={activeTab}
-            onTabClick={handleTabClick}
-          />
+            {/* ── CATEGORY LISTING VIEW ── */}
+            {selectedCategory ? (
+                <>
+                    {/* Back button */}
+                    <button
+                        type="button"
+                        onClick={handleBackToCategories}
+                        className="mb-8 inline-flex items-center gap-2 rounded-full border-0 bg-transparent
+                            px-0 py-1 text-quaternary hover:text-primary group focus:outline-none focus:ring-0
+                            transition-colors duration-150"
+                    >
+                        <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
+                        All Events
+                    </button>
 
-          {canCreateEvent && (
-            <div className="mt-5 flex justify-center">
-              <button
-                onClick={() => navigate("/events/create")}
-                className="rounded-lg bg-primary px-5 py-2 font-semibold text-white hover:bg-red-400"
-              >
-                Create Event
-              </button>
-            </div>
-          )}
+                    {/* Header */}
+                    <div className="mx-auto flex max-w-3xl flex-col items-center justify-center gap-y-4 px-4 text-center sm:px-6 lg:px-8">
+                        <span className="w-auto rounded-full border-[1.2px] border-black px-8 py-3 text-center text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+                            {categoryMeta.label}
+                        </span>
+                        <span className="max-w-2xl text-sm leading-6 text-quaternary sm:text-base">
+                            {selectedCategory === 'PClub'
+                                ? "Photography Club's own curated events — workshops, shoots, and festivals."
+                                : "External and collaborative events covered by the Photography Club."}
+                        </span>
+                        <div className="mt-3">
+                            <ModularTabs tabs={navItems} activeTab={activeTab} onTabClick={setActiveTab} />
+                        </div>
+                    </div>
+
+                    {/* Event grid */}
+                    <div className="mt-9 md:mt-11">
+                        {eventsToShow.length > 0 ? (
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6">
+                                {eventsToShow.map((event) => (
+                                    <EventsThumb
+                                        key={event.id}
+                                        event={getCardEvent(event)}
+                                        thinVariant={false}
+                                        variant="grid"
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            /* Empty state */
+                            <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
+                                <span className="text-5xl">📷</span>
+                                <p className="font-playfair text-2xl font-medium text-primary">
+                                    No {TAB_LABEL[activeTab] ? `${TAB_LABEL[activeTab]} ` : ''}{categoryMeta.emptyPrefix} events found.
+                                </p>
+                                <p className="max-w-sm text-sm text-quaternary">
+                                    {activeTab === 'upcoming'
+                                        ? 'Check back soon — events are being planned.'
+                                        : activeTab === 'past'
+                                        ? 'No past events in this category yet.'
+                                        : 'No events in this category yet.'}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </>
+            ) : (
+                /* ── CATEGORY SELECTOR VIEW ── */
+                <>
+                    <div className="mx-auto flex max-w-3xl flex-col items-center justify-center gap-y-4 px-4 text-center sm:px-6 lg:px-8">
+                        <span className="w-auto rounded-full border-[1.2px] border-black px-8 py-3 text-center text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+                            Club Events
+                        </span>
+                        <span className="max-w-2xl text-sm leading-6 text-quaternary sm:text-base">
+                            Discover the events and moments we&apos;ve planned for our photography community.
+                        </span>
+                    </div>
+
+                    <EventCategorySelector onSelect={handleSelectCategory} />
+                </>
+            )}
         </div>
-      </div>
-
-      {/*Content part  */}
-      <div className="mt-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {eventsToShow.map((event, index) => (
-            <EventsThumb
-              event={event}
-              key={index}
-              thinVariant={false}
-              variant="grid"
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 /*const events = [
@@ -202,4 +218,6 @@ const navItems = [
   { id: "nitkevents", label: "NITK Events" },
 ];
 
-export default Events;
+
+
+export default Events
