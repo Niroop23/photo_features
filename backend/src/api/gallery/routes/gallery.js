@@ -27,6 +27,26 @@ module.exports = {
       },
     },
 
+    
+    {
+      method: "POST",
+      path: "/gallery/event-thumbnail/upload",
+      handler: "gallery.uploadEventThumbnail",
+      config: {
+        auth: false,
+        policies: [
+          "global::verify-node-jwt",
+          {
+            name: "global::require-role",
+            config: {
+              roles: ["admin", "sig-coordinator"],
+            },
+          },
+        ],
+      },
+    },
+
+
     {
       method: "POST",
       path: "/gallery/upload",

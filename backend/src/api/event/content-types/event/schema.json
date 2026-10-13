@@ -45,14 +45,22 @@
       "required": true,
       "default": false
     },
-    "buttonLink": {
-      "type": "string",
-      "required": false
-    },
-    "buttonColor": {
-      "type": "string",
-      "required": false
-    },
+    "objectives": {
+  "type": "json",
+  "required": false
+},
+"highlights": {
+  "type": "json",
+  "required": false
+},
+"portfolioLink": {
+  "type": "string",
+  "required": false
+},
+"contactPerson": {
+  "type": "string",
+  "required": false
+},
     "thumbnailPic": {
       "type": "media",
       "multiple": false,
@@ -61,6 +69,12 @@
         "images",
         "files"
       ]
-    }
+    },
+    "posts": {
+  "type": "relation",
+  "relation": "oneToMany",
+  "target": "api::post.post",
+  "mappedBy": "event"
+}
   }
 }

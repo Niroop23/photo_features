@@ -5,7 +5,7 @@ import {
   setStoredAuthToken,
   getStoredAuthToken,
   subscribeAuthEvents,
-} from "../components/util/authClient";
+} from "../../components/util/authClient";
 import { AuthContext } from "./authContext";
 
 const normalizeUser = (user) => {
