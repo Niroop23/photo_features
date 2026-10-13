@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { FiCamera, FiInstagram, FiTwitter, FiYoutube } from "react-icons/fi";
 import { navigateSmooth } from "../../utils/helperFunctions";
 
@@ -24,32 +24,32 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="border-t border-gray-200 bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-10 md:py-12">
-        <div className="grid grid-cols-1 gap-9 sm:grid-cols-2 md:grid-cols-4 md:items-start">
+    <footer className="bg-white border-t border-gray-200">
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand */}
           <div className="col-span-1">
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-gray-50">
-                <FiCamera size={21} />
-              </span>
-              <span className="font-playfair text-xl leading-tight">
+            <div className="flex items-center gap-2">
+              <FiCamera size={24} />
+              <span className="font-playfair text-xl">
                 Photography Club NITK
               </span>
             </div>
-            <p className="mt-4 max-w-xs text-sm leading-6 text-gray-600">
+            <p className="mt-4 text-sm text-gray-600">
               Capturing moments, creating memories, and fostering a community of
               passionate photographers.
             </p>
           </div>
 
+          {/* Quick Links */}
           <div className="col-span-1">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-900">Quick Links</h3>
-            <div className="flex flex-col items-start gap-3 text-sm text-gray-600">
-              {quickLinks.map((link) => (
+            <h3 className="font-medium mb-4">Quick Links</h3>
+            <div className="flex flex-col gap-2 text-sm text-gray-600">
+              {quickLinks.map((link, index) => (
                 <button
-                  key={link.name}
+                  key={index}
                   onClick={() => handleNavigation(link.path)}
-                  className="text-left transition-colors hover:text-primary focus:outline-none focus:text-primary"
+                  className="text-left hover:text-red-500 transition-colors"
                 >
                   {link.name}
                 </button>
@@ -57,14 +57,15 @@ export default function Footer() {
             </div>
           </div>
 
+          {/* Resources */}
           <div className="col-span-1">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-900">Resources</h3>
-            <div className="flex flex-col items-start gap-3 text-sm text-gray-600">
-              {resourceLinks.map((link) => (
+            <h3 className="font-medium mb-4">Resources</h3>
+            <div className="flex flex-col gap-2 text-sm text-gray-600">
+              {resourceLinks.map((link, index) => (
                 <button
-                  key={link.name}
+                  key={index}
                   onClick={() => handleNavigation(link.path)}
-                  className="text-left transition-colors hover:text-primary focus:outline-none focus:text-primary"
+                  className="text-left hover:text-red-500 transition-colors"
                 >
                   {link.name}
                 </button>
@@ -72,27 +73,25 @@ export default function Footer() {
             </div>
           </div>
 
+          {/* Social */}
           <div className="col-span-1">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-gray-900">Follow Us</h3>
-            <div className="flex gap-3">
+            <h3 className="font-medium mb-4">Follow Us</h3>
+            <div className="flex gap-4">
               <a
                 href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:border-primary hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                aria-label="Instagram"
+                className="text-gray-600 hover:text-red-500 transition-colors"
               >
                 <FiInstagram size={20} />
               </a>
               <a
                 href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:border-primary hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                aria-label="Twitter"
+                className="text-gray-600 hover:text-red-500 transition-colors"
               >
                 <FiTwitter size={20} />
               </a>
               <a
                 href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:border-primary hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                aria-label="YouTube"
+                className="text-gray-600 hover:text-red-500 transition-colors"
               >
                 <FiYoutube size={20} />
               </a>
@@ -100,20 +99,13 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-gray-200 pt-6">
+        <div className="mt-12 pt-8 border-t border-gray-200 flex flex-col gap-4">
           <p className="text-center text-sm text-gray-600">
-            &copy; {new Date().getFullYear()} Photography Club NITK. All rights reserved.
+            © {new Date().getFullYear()} Photography Club NITK. All rights
+            reserved.
           </p>
           <p className="text-center text-sm text-gray-600">
-            Made by{" "}
-            <a
-              className="font-medium text-primary underline-offset-4 hover:underline"
-              href="https://webclub.nitk.ac.in"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Web Enthusiasts&apos; Club NITK
-            </a>
+              Made with 💙 by <a className="underline text-blue-600" href="https://webclub.nitk.ac.in" target="_blank" rel="noopener noreferrer">Web Enthusiasts&apos; Club NITK</a>
           </p>
         </div>
       </div>

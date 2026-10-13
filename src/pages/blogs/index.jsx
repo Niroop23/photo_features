@@ -1,4 +1,4 @@
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router';
 import { useState, useEffect } from 'react';
 import Dropdown from '../../components/filtersort/dropdown';
 import BlogsThumb from '../../components/blogs/blogsThumb';

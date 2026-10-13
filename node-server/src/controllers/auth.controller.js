@@ -103,16 +103,6 @@ export const getCurrentUser = async (req, res) => {
   });
 };
 
-export const getProfile = async (req, res) => {
-    const user = req.currentUser ?? await getUserById(req.user.userId);
-
-    res.json({
-        success: true,
-        profile: toPublicUser(user) ?? req.user,
-        message: "Profile API",
-    });
-};
-
 export const logout = async (req, res) => {
   res.json({
     success: true,

@@ -1,28 +1,4 @@
 import { verifyToken } from "../utils/jwt.js";
-import { getUserById } from "../services/strapi.service.js";
-
-const sendAuthError = (res, statusCode, message) =>
-    res.status(statusCode).json({
-        success: false,
-        message,
-    });
-
-const loadCurrentUser = async (req) => {
-    if (req.currentUser) {
-        return req.currentUser;
-    }
-
-    const userId = req.user?.userId;
-
-    if (!userId) {
-        return null;
-    }
-
-    const user = await getUserById(userId);
-    req.currentUser = user;
-
-    return user;
-};
 
 export const verifyJWT = (req, res, next) => {
   try {

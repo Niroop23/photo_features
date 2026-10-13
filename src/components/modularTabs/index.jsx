@@ -2,18 +2,20 @@ import PropTypes from 'prop-types';
 
 function ModularTabs({ tabs, activeTab, onTabClick }) {
     return (
-        <div className="flex flex-row gap-2 rounded-full border border-secondary bg-complementPrimary/70 p-1 shadow-sm">
+        <div className="flex flex-row gap-4 border-b border-gray-200">
             {tabs.map((tab) => (
                 <button
                     key={tab.id}
                     onClick={() => onTabClick(tab.id)}
-                    className={`rounded-full px-5 py-2 text-[14px] font-semibold
-                        transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary/40
+                    className={`px-4 py-2 text-[14px] font-medium 
+                        transition-all duration-200 ease-in-out
+                        border-b-2 -mb-[1px]
                         ${activeTab === tab.id
-                            ? 'bg-primary text-complementPrimary shadow-sm'
-                            : 'text-quaternary hover:bg-complementSecondary hover:text-primary'
+                            ? 'border-primary text-primary border-b-[3px]'
+                            : 'border-transparent text-gray-500 hover:text-primary hover:border-gray-300'
                         }`}
                 >
+
                     {tab.label}
                 </button>
             ))}

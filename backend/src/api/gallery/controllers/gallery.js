@@ -167,48 +167,40 @@ module.exports = {
     }
   },
 
-  
   async uploadEventThumbnail(ctx) {
-    try {
-      const strapi = global.strapi;
-      const file = ctx.request.files?.files;
+  try {
+    const strapi = global.strapi;
+    const file = ctx.request.files?.files;
 
-      if (!ctx.state.user) {
-        return ctx.unauthorized("Authentication required");
-      }
-
-      if (!file || Array.isArray(file)) {
-        return ctx.badRequest("Upload exactly one thumbnail image");
-      }
-
-      if (!file.mimetype?.startsWith("image/")) {
-        return ctx.badRequest("Only image files are allowed");
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        return ctx.badRequest("Image size must be 5 MB or less");
-      }
-
-      const uploaded = await strapi
-        .plugin("upload")
-        .service("upload")
-        .upload({
-          data: {},
-          files: file,
-        });
-
-      return ctx.send({
-        success: true,
-        media: uploaded[0],
-      });
-    } catch (error) {
-      console.error("Event thumbnail upload error:", error);
-      return ctx.internalServerError("Failed to upload thumbnail");
+    if (!ctx.state.user) {
+      return ctx.unauthorized("Authentication required");
     }
-  },
 
+    if (!file || Array.isArray(file)) {
+      return ctx.badRequest("Upload exactly one thumbnail image");
+    }
 
+    if (!file.mimetype?.startsWith("image/")) {
+  return ctx.badRequest("Only image files are allowed");
+}
 
+    const uploaded = await strapi
+      .plugin("upload")
+      .service("upload")
+      .upload({
+        data: {},
+        files: file,
+      });
+
+    return ctx.send({
+      success: true,
+      media: uploaded[0],
+    });
+  } catch (error) {
+    console.error("Event thumbnail upload error:", error);
+    return ctx.internalServerError("Failed to upload thumbnail");
+  }
+},
 
   async uploadEventPhotos(ctx) {
     try {

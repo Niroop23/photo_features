@@ -1,13 +1,12 @@
 import express from "express";
 
-import { googleLogin, getCurrentUser, getProfile, logout } from "../controllers/auth.controller.js";
-import { attachCurrentUser, verifyJWT } from "../middleware/auth.middleware.js";
+import { googleLogin, getCurrentUser, logout } from "../controllers/auth.controller.js";
+import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
 router.post("/google", googleLogin);
-router.get("/me", verifyJWT, attachCurrentUser, getCurrentUser);
-router.get("/profile", verifyJWT, attachCurrentUser, getProfile);
+router.get("/me", verifyJWT, getCurrentUser);
 router.post("/logout", verifyJWT, logout);
 
 export default router;

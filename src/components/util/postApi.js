@@ -1,5 +1,4 @@
 import axios from "axios";
-import { authClient } from "./authClient";
 import { API_URL } from "./api";
 
 const mapPhoto = (photo) => {

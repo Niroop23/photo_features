@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router";
 import HomePage from "./pages/home";
 
 import Events from "./pages/events";
@@ -24,37 +24,19 @@ export default function App() {
     <div>
       <ThemeProvider>
         <div className="bg-complementPrimary">
-
-          {/* Header hidden on login/register */}
-          {!hideChrome && <Header />}
-
-          {/* pt-[65px] offsets the fixed header height — not needed on login */}
-          <div className={!hideChrome ? "pt-[65px]" : ""}>
+          <Header />
+          <div className="pt-[65px]">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/portfolio" element={<PortfolioLayout />}>
                 <Route index element={<PortfolioPage />} />
-                <Route
-                  path=":id"
-                  element={
-                    <ProtectedRoute roles={["member", "admin"]}>
-                      <IndividualPortfolio />
-                    </ProtectedRoute>
-                  }
-                />
+                <Route path=":id" element={<IndividualPortfolio />} />
               </Route>
               <Route path="/photo-reels" element={<PhotoReels />} />
               <Route path="/photo-reels/:photoId" element={<PhotoReels />} />
               <Route path="/events/create" element={<CreateEvent />} />
               <Route path="/events" element={<Events />}>
-                <Route
-                  path=":id"
-                  element={
-                    <ProtectedRoute nitkOnly>
-                      <EventPage />
-                    </ProtectedRoute>
-                  }
-                />
+                <Route path=":id" element={<EventPage />} />
               </Route>
               <Route path="/blogs" element={<Blogs />}>
                 <Route path=":id" element={<BlogPage />} />
@@ -64,10 +46,7 @@ export default function App() {
               <Route path="/events/:id/upload" element={<EventPhotoUpload />} />
             </Routes>
           </div>
-
-          {/* Footer hidden on login/register */}
-          {!hideChrome && <Footer />}
-
+          <Footer />
         </div>
       </ThemeProvider>
     </div>

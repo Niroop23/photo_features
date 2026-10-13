@@ -1,14 +1,91 @@
-import { Outlet, useParams, useNavigate } from "react-router";
-import { useState } from "react";
-import Dropdown from "../../components/filtersort/dropdown";
+
+import { Outlet, useParams, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft } from "lucide-react";
+
 import EventsThumb from "../../components/events/eventsThumb";
 import ModularTabs from "../../components/modularTabs";
-import { useEffect } from "react";
-import axios from "axios";
+import EventCategorySelector from "./components/EventCategorySelector";
+import { getEvents } from "../../services/eventsService";
+
+const navItems = [
+  { id: "upcoming", label: "Upcoming" },
+  { id: "all", label: "All" },
+  { id: "past", label: "Past" },
+];
+
+const CATEGORY_META = {
+  PClub: {
+    label: "PClub Events",
+    emptyPrefix: "PClub",
+  },
+  Others: {
+    label: "Others Events",
+    emptyPrefix: "Others",
+  },
+};
+
+const TAB_LABEL = {
+  upcoming: "upcoming",
+  all: "",
+  past: "past",
+};
+
+const getEventStartDate = (dateTime) => {
+  if (!dateTime) return null;
+
+  const startDate = dateTime.split("/")[0];
+  const date = new Date(startDate);
+
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const getCardEvent = (event) => ({
+  id: String(event.id),
+  title: event.title,
+  description:
+    event.shortDescription || event.fullDescription || "",
+  location: event.location || event.venue || "Location not specified",
+  dateTime: event.dateTime,
+  image: event.image || event.bannerImage,
+  thumbnailColor: event.thumbnailColor,
+});
+
+const filterByTab = (events, activeTab) => {
+  if (activeTab === "all") return events;
+
+  const now = new Date();
+
+  return events.filter((event) => {
+    const eventDate = getEventStartDate(event.dateTime);
+
+    if (!eventDate) return false;
+
+    return activeTab === "upcoming"
+      ? eventDate >= now
+      : eventDate < now;
+  });
+};
+
+const filterEvents = (events, selectedCategory, activeTab) => {
+  const byCategory = events.filter((event) =>
+    selectedCategory === "PClub"
+      ? event.eventType === "PClub"
+      : event.eventType !== "PClub"
+  );
+
+  return filterByTab(byCategory, activeTab);
+};
 
 function Events() {
-    const { id } = useParams();
-    
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [events, setEvents] = useState([]);
+  const [activeTab, setActiveTab] = useState("upcoming");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const token = localStorage.getItem("authToken");
 
@@ -23,201 +100,188 @@ function Events() {
   }
 
   const canCreateEvent =
-    user?.role === "admin" || user?.role === "sig-coordinator";
-  const [activeTab, setActiveTab] = useState("upcoming");
-  const [eventsToShow, setEventsToShow] = useState([]);
-  const [events, setEvents] = useState([]);
+    user?.role === "admin" ||
+    user?.role === "sig-coordinator";
 
-  const API = "http://localhost:1337/api/events";
-
-  const getEvents = async () => {
-    try {
-      const token = localStorage.getItem("authToken");
-
-      if (!token) {
-        console.log("No authentication token. Events are protected.");
-        return;
-      }
-
-      const res = await axios.get(API, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("EVENTS FROM STRAPI:", res.data.data);
-
-      const events = [...res.data.data].sort(
-        (a, b) => new Date(b.dateTime) - new Date(a.dateTime),
-      );
-
-      setEvents(events);
-    } catch (err) {
-      console.log("Events API error:", err.response?.data || err);
-    }
-  };
   useEffect(() => {
-    getEvents();
+    let isMounted = true;
+
+    async function loadEvents() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const eventList = await getEvents();
+
+        if (isMounted) {
+          setEvents(eventList);
+        }
+      } catch (err) {
+        console.error("Failed to load events:", err);
+
+        if (isMounted) {
+          setError("Unable to load events. Please try again.");
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    loadEvents();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  const handleTabClick = (tabId) => {
-    setActiveTab(tabId);
-
-    // Reset tab to "upcoming" whenever the user switches categories
-    const handleSelectCategory = (category) => {
-        setSelectedCategory(category);
-        setActiveTab('upcoming');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const handleBackToCategories = () => {
-        setSelectedCategory(null);
-        setActiveTab('upcoming');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const eventsToShow = useMemo(
-        () => selectedCategory ? filterEvents(events, selectedCategory, activeTab) : [],
-        [events, selectedCategory, activeTab]
-    );
-
-    // Render event detail page when navigated to /events/:id
-    if (id) {
-        return <Outlet />;
-    }
+  const handleSelectCategory = (category) => {
+    setSelectedCategory(category);
+    setActiveTab("upcoming");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-    const categoryMeta = selectedCategory ? CATEGORY_META[selectedCategory] : null;
+  const handleBackToCategories = () => {
+    setSelectedCategory(null);
+    setActiveTab("upcoming");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-    return (
-        <div className="max-w-container mx-auto px-container-px md:px-container-px-md py-10 md:py-12">
+  const eventsToShow = useMemo(() => {
+    if (!selectedCategory) return [];
 
-            {/* ── CATEGORY LISTING VIEW ── */}
-            {selectedCategory ? (
-                <>
-                    {/* Back button */}
-                    <button
-                        type="button"
-                        onClick={handleBackToCategories}
-                        className="mb-8 inline-flex items-center gap-2 rounded-full border-0 bg-transparent
-                            px-0 py-1 text-quaternary hover:text-primary group focus:outline-none focus:ring-0
-                            transition-colors duration-150"
-                    >
-                        <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
-                        All Events
-                    </button>
+    return filterEvents(events, selectedCategory, activeTab);
+  }, [events, selectedCategory, activeTab]);
 
-                    {/* Header */}
-                    <div className="mx-auto flex max-w-3xl flex-col items-center justify-center gap-y-4 px-4 text-center sm:px-6 lg:px-8">
-                        <span className="w-auto rounded-full border-[1.2px] border-black px-8 py-3 text-center text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
-                            {categoryMeta.label}
-                        </span>
-                        <span className="max-w-2xl text-sm leading-6 text-quaternary sm:text-base">
-                            {selectedCategory === 'PClub'
-                                ? "Photography Club's own curated events — workshops, shoots, and festivals."
-                                : "External and collaborative events covered by the Photography Club."}
-                        </span>
-                        <div className="mt-3">
-                            <ModularTabs tabs={navItems} activeTab={activeTab} onTabClick={setActiveTab} />
-                        </div>
-                    </div>
+  if (id) {
+    return <Outlet />;
+  }
 
-                    {/* Event grid */}
-                    <div className="mt-9 md:mt-11">
-                        {eventsToShow.length > 0 ? (
-                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6">
-                                {eventsToShow.map((event) => (
-                                    <EventsThumb
-                                        key={event.id}
-                                        event={getCardEvent(event)}
-                                        thinVariant={false}
-                                        variant="grid"
-                                    />
-                                ))}
-                            </div>
-                        ) : (
-                            /* Empty state */
-                            <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-                                <span className="text-5xl">📷</span>
-                                <p className="font-playfair text-2xl font-medium text-primary">
-                                    No {TAB_LABEL[activeTab] ? `${TAB_LABEL[activeTab]} ` : ''}{categoryMeta.emptyPrefix} events found.
-                                </p>
-                                <p className="max-w-sm text-sm text-quaternary">
-                                    {activeTab === 'upcoming'
-                                        ? 'Check back soon — events are being planned.'
-                                        : activeTab === 'past'
-                                        ? 'No past events in this category yet.'
-                                        : 'No events in this category yet.'}
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                </>
-            ) : (
-                /* ── CATEGORY SELECTOR VIEW ── */
-                <>
-                    <div className="mx-auto flex max-w-3xl flex-col items-center justify-center gap-y-4 px-4 text-center sm:px-6 lg:px-8">
-                        <span className="w-auto rounded-full border-[1.2px] border-black px-8 py-3 text-center text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
-                            Club Events
-                        </span>
-                        <span className="max-w-2xl text-sm leading-6 text-quaternary sm:text-base">
-                            Discover the events and moments we&apos;ve planned for our photography community.
-                        </span>
-                    </div>
+  const categoryMeta = selectedCategory
+    ? CATEGORY_META[selectedCategory]
+    : null;
 
-                    <EventCategorySelector onSelect={handleSelectCategory} />
-                </>
+  return (
+    <div className="max-w-container mx-auto px-container-px md:px-container-px-md py-10 md:py-12">
+      {selectedCategory ? (
+        <>
+          <button
+            type="button"
+            onClick={handleBackToCategories}
+            className="mb-8 inline-flex items-center gap-2 rounded-full border-0 bg-transparent px-0 py-1 text-quaternary hover:text-primary group transition-colors duration-150"
+          >
+            <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
+            All Events
+          </button>
+
+          <div className="mx-auto flex max-w-3xl flex-col items-center justify-center gap-y-4 px-4 text-center sm:px-6 lg:px-8">
+            <span className="w-auto rounded-full border-[1.2px] border-black px-8 py-3 text-center text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+              {categoryMeta.label}
+            </span>
+
+            <span className="max-w-2xl text-sm leading-6 text-quaternary sm:text-base">
+              {selectedCategory === "PClub"
+                ? "Photography Club's own curated events — workshops, shoots, and festivals."
+                : "External and collaborative events covered by the Photography Club."}
+            </span>
+
+            <div className="mt-3">
+              <ModularTabs
+                tabs={navItems}
+                activeTab={activeTab}
+                onTabClick={setActiveTab}
+              />
+            </div>
+
+            {canCreateEvent && (
+              <button
+                type="button"
+                onClick={() => navigate("/events/create")}
+                className="rounded-lg bg-primary px-5 py-2 font-semibold text-white hover:opacity-80"
+              >
+                Create Event
+              </button>
             )}
-        </div>
-    );
+          </div>
+
+          <div className="mt-9 md:mt-11">
+            {loading ? (
+              <p className="py-16 text-center text-quaternary">
+                Loading events...
+              </p>
+            ) : error ? (
+              <p className="py-16 text-center text-red-600">
+                {error}
+              </p>
+            ) : eventsToShow.length > 0 ? (
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:gap-6">
+                {eventsToShow.map((event) => (
+                  <EventsThumb
+                    key={event.id}
+                    event={getCardEvent(event)}
+                    thinVariant={false}
+                    variant="grid"
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
+                <span className="text-5xl">📷</span>
+
+                <p className="font-playfair text-2xl font-medium text-primary">
+                  No {TAB_LABEL[activeTab]
+                    ? `${TAB_LABEL[activeTab]} `
+                    : ""}
+                  {categoryMeta.emptyPrefix} events found.
+                </p>
+
+                <p className="max-w-sm text-sm text-quaternary">
+                  {activeTab === "upcoming"
+                    ? "Check back soon — events are being planned."
+                    : activeTab === "past"
+                      ? "No past events in this category yet."
+                      : "No events in this category yet."}
+                </p>
+              </div>
+            )}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="mx-auto flex max-w-3xl flex-col items-center justify-center gap-y-4 px-4 text-center sm:px-6 lg:px-8">
+            <span className="w-auto rounded-full border-[1.2px] border-black px-8 py-3 text-center text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+              Club Events
+            </span>
+
+            <span className="max-w-2xl text-sm leading-6 text-quaternary sm:text-base">
+              Discover the events and moments we've planned for our photography community.
+            </span>
+
+            {canCreateEvent && (
+              <button
+                type="button"
+                onClick={() => navigate("/events/create")}
+                className="rounded-lg bg-primary px-5 py-2 font-semibold text-white hover:opacity-80"
+              >
+                Create Event
+              </button>
+            )}
+          </div>
+
+          {loading ? (
+            <p className="py-16 text-center text-quaternary">
+              Loading events...
+            </p>
+          ) : error ? (
+            <p className="py-16 text-center text-red-600">
+              {error}
+            </p>
+          ) : (
+            <EventCategorySelector onSelect={handleSelectCategory} />
+          )}
+        </>
+      )}
+    </div>
+  );
 }
 
-/*const events = [
-    {
-        id: "incident-24",
-        title: "Incident '24",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-        location: "Main Building, NITK",
-        dateTime: "2026-01-01 10:00 AM",
-        image: "https://img.freepik.com/free-photo/3d-modern-background-with-hot-pink-flowing-lines_1048-12263.jpg",
-        thumbnailColor: "#E195AB"
-    },
-    {
-        id: "engineer-24",
-        title: "Engineer '24",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-        location: "Main Building, NITK",
-        dateTime: "2027-01-01 10:00 AM",
-        image: "https://placehold.co/200x260", //optional
-        thumbnailColor: "#DE3163"
-    },
-    {
-        id: "photography-24",
-        title: "Photography '24",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-        location: "Main Building, NITK",
-        dateTime: "2024-01-01 10:00 AM",
-        image: "https://placehold.co/200x260",
-        thumbnailColor: "#FFB4A2"
-    },
-    {
-        id: "event-4",
-        title: "Event 4 - No Image",
-        description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-        location: "Main Building, NITK",
-        dateTime: "2024-01-01 10:00 AM",
-        image: null,
-        thumbnailColor: "#FFB4A2"
-    }
-]
-*/
-const navItems = [
-  { id: "upcoming", label: "Upcoming" },
-  { id: "all", label: "All" },
-  { id: "pclub", label: "PClub" },
-  { id: "nitkevents", label: "NITK Events" },
-];
-
-
-
-export default Events
+export default Events;

@@ -6,27 +6,11 @@ import { navigateSmooth } from '../../utils/helperFunctions';
 
 function EventsThumb({ event, isOnHomePage = false, thinVariant = false, variant = "scroll" }) {
     const navigate = useNavigate();
-
+    
     const handleEventClick = () => {
         const fromPage = isOnHomePage ? 'home' : 'events';
-        navigateSmooth(navigate, `/events/${event.EventId}`, fromPage);
+        navigateSmooth(navigate, `/events/${event.id}`, fromPage);
     };
-    let thumbnailColor = '#b92c2c';
-    let imageUrl =null; // Use the event image if available, otherwise use the noise image
-    if(event.EventId.startsWith("Inci")){
-        thumbnailColor = "#E195AB";
-        imageUrl="https://img.freepik.com/free-photo/3d-modern-background-with-hot-pink-flowing-lines_1048-12263.jpg";
-    }
-    else if(event.EventId.startsWith("PClub")){
-        thumbnailColor = "#FFB4A2";
-        imageUrl="https://placehold.co/200x260";
-    }
-    else if(event.EventId.startsWith("Engi")){
-        thumbnailColor = "#DE3163";
-        imageUrl="https://placehold.co/200x260";
-    }
-    
-    
 
     const formatDateTime = (dateTimeStr) => {
         if (!dateTimeStr) return "Date to be announced";
@@ -80,15 +64,14 @@ function EventsThumb({ event, isOnHomePage = false, thinVariant = false, variant
                 )}
             </div>
 
-            {/* Content container */}
-            <div className="relative w-full h-full text-white text-[14px] font-medium flex flex-row">
-                <div className="absolute inset-0 p-3 flex flex-col justify-between h-full z-10 md:relative">
-                    {/* Title at the top */}
-                    <div>
-                        <p className="font-playfair text-[24px] md:text-[32px] font-medium leading-[1]">
-                            {event.EventName}
-                        </p>
-                    </div>
+            {/* Event Information - Clean and Minimal */}
+            <div className="flex flex-col justify-between gap-3 bg-white p-5 md:p-6">
+                {/* Title */}
+                <div>
+                    <p className="font-playfair text-2xl md:text-3xl font-medium leading-tight text-primary">
+                        {event.title}
+                    </p>
+                </div>
 
                 {/* Description */}
                 <p className="line-clamp-2 text-sm md:text-base leading-6 text-quaternary">
@@ -106,30 +89,6 @@ function EventsThumb({ event, isOnHomePage = false, thinVariant = false, variant
                         <span>{formatDateTime(event.dateTime)}</span>
                     </p>
                 </div>
-
-                {/* Event Image (if available) */}
-                {imageUrl && (
-                    <div className={`relative object-cover object-center h-full
-                        ${variant === "scroll" ? "md:w-[200px]" : "md:w-[280px]"}
-                        w-full`}
-                    >
-                        <img src={imageUrl} alt={event.EventName}
-                            className="absolute inset-0 w-full h-full object-cover rounded-[0_8px_8px_0]"
-                        />
-                        {/* Overlay To Tint Image */}
-                        <div
-                            style={{ background: `linear-gradient(to right, ${thumbnailColor}, transparent)` }}
-                            className="absolute inset-0 w-full h-full opacity-80 rounded-[0_8px_8px_0]"
-                        />
-                        <div
-                            style={{ background: `${thumbnailColor}` }}
-                            className="absolute inset-0 w-full opacity-55 md:opacity-25 h-full rounded-[0_8px_8px_0]"
-                        />
-                        <div
-                            className="absolute inset-0 bg-black opacity-30 md:hidden h-full w-full"
-                        />
-                    </div>
-                )}
             </div>
         </div>
     );
@@ -137,16 +96,13 @@ function EventsThumb({ event, isOnHomePage = false, thinVariant = false, variant
 
 EventsThumb.propTypes = {
     event: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        createdAt: PropTypes.string,
-        updatedAt: PropTypes.string,
-        publishedAt: PropTypes.string,
-        EventId: PropTypes.string.isRequired,
-        EventName: PropTypes.string.isRequired,
+        id: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired,
         description: PropTypes.string.isRequired,
         location: PropTypes.string.isRequired,
         dateTime: PropTypes.string.isRequired,
-        isPClubEvent: PropTypes.bool.isRequired,
+        image: PropTypes.string,
+        thumbnailColor: PropTypes.string,
     }).isRequired,
     isOnHomePage: PropTypes.bool,
     thinVariant: PropTypes.bool,
