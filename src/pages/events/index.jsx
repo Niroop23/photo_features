@@ -28,7 +28,6 @@ function Events() {
     }
     useEffect(() => {
         getEvents();
-        
     }, []);
 
 
