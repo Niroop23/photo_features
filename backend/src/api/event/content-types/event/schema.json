@@ -45,22 +45,12 @@
       "required": true,
       "default": false
     },
-    "objectives": {
-  "type": "json",
-  "required": false
-},
-"highlights": {
-  "type": "json",
-  "required": false
-},
+    
 "portfolioLink": {
   "type": "string",
   "required": false
 },
-"contactPerson": {
-  "type": "string",
-  "required": false
-},
+
     "thumbnailPic": {
       "type": "media",
       "multiple": false,

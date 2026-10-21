@@ -24,15 +24,11 @@ function CreateEvent() {
 
   const [form, setForm] = useState({
     Title: "",
-    EventName: "",
     description: "",
     location: "",
     locationLink: "",
     dateTime: "",
     isPClubEvent: false,
-    objectives: "",
-    highlights: "",
-    contactPerson: "",
     portfolioLink: "",
   });
 
@@ -156,21 +152,11 @@ function CreateEvent() {
       const eventData = {
         EventId: `event-${Date.now()}`,
         Title: form.Title.trim(),
-        EventName: form.EventName.trim(),
         description: form.description.trim(),
         location: form.location.trim(),
         locationLink: form.locationLink.trim() || null,
         dateTime: new Date(form.dateTime).toISOString(),
         isPClubEvent: form.isPClubEvent,
-        contactPerson: form.contactPerson.trim() || null,
-        objectives: form.objectives
-          .split("\n")
-          .map((item) => item.trim())
-          .filter(Boolean),
-        highlights: form.highlights
-          .split("\n")
-          .map((item) => item.trim())
-          .filter(Boolean),
         portfolioLink: form.portfolioLink.trim() || null,
       };
 
@@ -243,7 +229,7 @@ function CreateEvent() {
               subtitle="The basic information about your event."
             />
 
-            <div className="grid gap-5 p-5 sm:grid-cols-2 sm:p-8">
+            <div className=" p-5  sm:p-8">
               <div>
                 <label className={labelClass}>Event Title *</label>
                 <input
@@ -256,17 +242,7 @@ function CreateEvent() {
                 />
               </div>
 
-              <div>
-                <label className={labelClass}>Event Name *</label>
-                <input
-                  name="EventName"
-                  value={form.EventName}
-                  onChange={handleChange}
-                  placeholder="Enter the event name"
-                  className={inputClass}
-                  required
-                />
-              </div>
+             
 
               <div className="sm:col-span-2">
                 <label className={labelClass}>Description *</label>
@@ -344,23 +320,7 @@ function CreateEvent() {
                 <p className="mt-2 text-xs text-gray-500">Optional</p>
               </div>
 
-              <div className="sm:col-span-2">
-                <label className={labelClass}>Contact Person</label>
-                <div className="relative">
-                  <UserRound
-                    size={18}
-                    className="absolute left-3 top-3.5 text-gray-400"
-                  />
-                  <input
-                    name="contactPerson"
-                    value={form.contactPerson}
-                    onChange={handleChange}
-                    placeholder="Name of the event contact"
-                    className={`${inputClass} pl-10`}
-                  />
-                </div>
-                <p className="mt-2 text-xs text-gray-500">Optional</p>
-              </div>
+              
             </div>
           </section>
 
@@ -436,55 +396,7 @@ function CreateEvent() {
             </div>
           </section>
 
-          <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-            <SectionHeading
-              icon={<Sparkles size={21} />}
-              title="Objectives & highlights"
-              subtitle="Tell visitors what the event aims to achieve and what makes it special."
-            />
-
-            <div className="grid gap-5 p-5 sm:grid-cols-2 sm:p-8">
-              <div>
-                <label className={labelClass}>
-                  <span className="inline-flex items-center gap-2">
-                    <Target size={16} />
-                    Objectives
-                  </span>
-                </label>
-                <textarea
-                  name="objectives"
-                  value={form.objectives}
-                  onChange={handleChange}
-                  placeholder={"Learn photography basics\nPractice composition"}
-                  rows={5}
-                  className={`${inputClass} resize-y`}
-                />
-                <p className="mt-2 text-xs text-gray-500">
-                  Enter one objective per line. Optional.
-                </p>
-              </div>
-
-              <div>
-                <label className={labelClass}>
-                  <span className="inline-flex items-center gap-2">
-                    <Sparkles size={16} />
-                    Event Highlights
-                  </span>
-                </label>
-                <textarea
-                  name="highlights"
-                  value={form.highlights}
-                  onChange={handleChange}
-                  placeholder={"Live demonstrations\nHands-on activities"}
-                  rows={5}
-                  className={`${inputClass} resize-y`}
-                />
-                <p className="mt-2 text-xs text-gray-500">
-                  Enter one highlight per line. Optional.
-                </p>
-              </div>
-            </div>
-          </section>
+          
 
           <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
             <SectionHeading

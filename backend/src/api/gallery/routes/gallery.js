@@ -58,7 +58,7 @@ module.exports = {
           {
             name: "global::require-role",
             config: {
-              roles: ["admin", "sig-coordinator"],
+              roles: ["admin", "photographer"],
             },
           },
         ],

@@ -18,24 +18,27 @@
       "type": "media",
       "multiple": false,
       "required": true,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "visibility": {
       "type": "enumeration",
-      "enum": ["public", "private"],
+      "required": true,
       "default": "private",
-      "required": true
+      "enum": [
+        "public",
+        "private"
+      ]
     },
     "capturedDate": {
       "type": "date"
     },
-
     "uploadedBy": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "plugin::users-permissions.user"
     },
-
     "capturedBy": {
       "type": "relation",
       "relation": "manyToOne",
@@ -55,7 +58,6 @@
         "Other"
       ]
     },
-
     "likesCount": {
       "type": "integer",
       "default": 0

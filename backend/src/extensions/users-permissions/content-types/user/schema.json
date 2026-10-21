@@ -99,14 +99,12 @@
   "type": "enumeration",
   "enum": [
     "user",
-    "club-member",
+    "photographer",
     "admin"
   ],
   "default": "user"
 },
-    "photographerRole": {
-      "type": "string"
-    },
+   
     "instagram": {
       "type": "string"
     }
