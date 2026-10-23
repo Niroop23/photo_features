@@ -65,21 +65,25 @@ export default function HomePage() {
           "https://photo-features-strapi.onrender.com/api/photos?populate=image",
         );
 
-        const formattedPhotos = res.data.data.map((photo) => ({
-          id: photo.id,
-          image: photo.image?.url
-            ? `https://photo-features-strapi.onrender.com${photo.image.url}`
-            : null,
-          title: photo.title || "Untitled Photo",
-          location: "NITK",
-          date: photo.capturedDate || photo.createdAt,
-          photographer: photo.capturedBy?.username || "PClub",
-          link: photo.image?.url
-            ? `https://photo-features-strapi.onrender.com${photo.image.url}`
-            : "#",
-        }));
+        const formattedPhotos = res.data.data.map((photo) => {
+          const imageUrl = photo.image?.url
+            ? photo.image.url.startsWith("http")
+              ? photo.image.url
+              : `https://photo-features-strapi.onrender.com${photo.image.url}`
+            : null;
+
+          return {
+            id: photo.id,
+            image: imageUrl,
+            title: photo.title || "Untitled Photo",
+            location: "NITK",
+            date: photo.capturedDate || photo.createdAt,
+            photographer: photo.capturedBy?.username || "PClub",
+            link: imageUrl || "#",
+          };
+        });
+
         console.log("FORMATTED PHOTOS:", formattedPhotos);
-        //console.log("Hi");
         setPhotos(formattedPhotos);
       } catch (error) {
         console.error("Failed to fetch photos:", error);
