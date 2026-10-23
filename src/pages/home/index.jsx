@@ -1,41 +1,17 @@
-import Landing from "./landing";
-import About from "./about";
-import Hero from "./hero";
-import ClubUpdates from "./clubUpdates";
-import photo1 from "../../assets/images/placeholder-images/photography1.png";
-import photo2 from "../../assets/images/placeholder-images/photography2.png";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import Landing from "./landing"
+import About from "./about"
+import Hero from "./hero"
+import ClubUpdates from "./clubUpdates"
+import photo1 from '../../assets/images/placeholder-images/photography1.png'
+import photo2 from '../../assets/images/placeholder-images/photography2.png'
+import {useEffect,useState} from "react";
 import axios from "axios";
 
 export default function HomePage() {
   const [events, setEvents] = useState([]);
   const [photos, setPhotos] = useState([]);
 
-  const getPhotos = async () => {
-    try {
-      const res = await axios.get(
-        "http://localhost:1337/api/photos?populate=image",
-      );
-
-      const formattedPhotos = res.data.data.map((photo) => ({
-        id: photo.id,
-        image: photo.image?.url
-          ? `http://localhost:1337${photo.image.url}`
-          : null,
-        title: photo.title || "Untitled Photo",
-        location: "NITK",
-        date: photo.createdAt,
-        photographer: "PClub",
-        link: "#",
-      }));
-
-      console.log("FORMATTED PHOTOS:", formattedPhotos);
-
-      setPhotos(formattedPhotos);
-    } catch (error) {
-      console.error("Failed to fetch photos:", error);
-    }
-  };
 
   const specialNotices = ["Recruitment for 2028 batch has begun."];
   const onJoin = (e) => {
@@ -83,16 +59,29 @@ export default function HomePage() {
   useEffect(() => {
     const getPhotos = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:1337/api/photos?populate=image",
-        );
+      const res = await axios.get(
+        "http://localhost:1337/api/photos?populate=image",
+      );
 
-        console.log("PHOTOS FROM STRAPI:", res.data.data);
-
-        setPhotos(res.data.data);
-      } catch (error) {
-        console.error("Failed to fetch photos:", error);
-      }
+      const formattedPhotos = res.data.data.map((photo) => ({
+      id: photo.id,
+      image: photo.image?.url
+        ? `http://localhost:1337${photo.image.url}`
+        : null,
+      title: photo.title || "Untitled Photo",
+      location: "NITK",
+      date: photo.capturedDate || photo.createdAt,
+      photographer: photo.capturedBy?.username || "PClub",
+      link: photo.image?.url
+        ? `http://localhost:1337${photo.image.url}`
+        : "#",
+    }));
+      console.log("FORMATTED PHOTOS:", formattedPhotos);
+      //console.log("Hi");
+      setPhotos(formattedPhotos);
+    } catch (error) {
+      console.error("Failed to fetch photos:", error);
+    }
     };
 
     getPhotos();
@@ -109,6 +98,7 @@ export default function HomePage() {
       <div className="max-w-container px-container-px py-5 mx-auto flex flex-col md:py-7 md:px-container-px-md">
         <About clubGallery={clubGallery} stats={stats} learnMore={learnMore} />
         <Hero photos={photos} />
+        
         <hr className="my-10 border-1 border-gray-300" />
         <ClubUpdates events={events} blogs={blogs} />
         <hr className="my-10 border-1 border-gray-300" />

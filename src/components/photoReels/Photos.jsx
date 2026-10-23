@@ -233,14 +233,14 @@ const Photos = () => {
                       <h3 className="text-gray-900 font-medium text-sm">
                         {photo.title}
                       </h3>
-                      <p className="text-gray-600 text-xs">
+                      {/* <p className="text-gray-600 text-xs">
                         By {photo.photographer}
-                      </p>
+                      </p> */}
 
                       <p className="text-gray-500 text-[10px]">
                         {photo.tag}
                       </p>
-                      <div className="flex items-center gap-3 mt-2">
+                      {/* <div className="flex items-center gap-3 mt-2">
                         <button
                           onClick={(e) => handleLike(photo, e)}
                           disabled={pendingLikes.has(photo.documentId)}
@@ -264,7 +264,7 @@ const Photos = () => {
                           <FiShare2 className="w-4 h-4" />
                           Share
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
