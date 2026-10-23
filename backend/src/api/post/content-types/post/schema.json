@@ -72,6 +72,12 @@
     },
     "settings": {
       "type": "string"
+    },
+    "event": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::event.event",
+      "inversedBy": "posts"
     }
   }
 }

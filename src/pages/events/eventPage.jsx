@@ -170,9 +170,11 @@ function EventPage() {
       {/* About Event */}
       <div className="mt-6 flex flex-col gap-6 sm:mt-8 sm:gap-8">
         <section className="w-full rounded-[20px] border border-secondary bg-complementPrimary p-4 font-sans sm:p-6 lg:p-7">
-          <h2 className="font-playfair text-3xl font-medium">About Event</h2>
+          
 
           <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+            <div>
+            <h2 className="font-playfair text-3xl font-medium mb-4">About Event</h2>
             <p className="whitespace-pre-line text-quaternary">
               {(() => {
                 const description =
@@ -185,7 +187,7 @@ function EventPage() {
                 );
               })()}
             </p>
-
+              </div>
             <EventInfoCard event={event} />
           </div>
 

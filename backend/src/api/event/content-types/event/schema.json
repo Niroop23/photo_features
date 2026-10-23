@@ -22,7 +22,7 @@
     },
     "EventName": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "description": {
       "type": "text",
@@ -45,12 +45,10 @@
       "required": true,
       "default": false
     },
-    
-"portfolioLink": {
-  "type": "string",
-  "required": false
-},
-
+    "portfolioLink": {
+      "type": "string",
+      "required": false
+    },
     "thumbnailPic": {
       "type": "media",
       "multiple": false,
@@ -61,10 +59,10 @@
       ]
     },
     "posts": {
-  "type": "relation",
-  "relation": "oneToMany",
-  "target": "api::post.post",
-  "mappedBy": "event"
-}
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::post.post",
+      "mappedBy": "event"
+    }
   }
 }
