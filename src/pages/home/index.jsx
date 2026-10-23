@@ -62,20 +62,20 @@ export default function HomePage() {
     const getPhotos = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:1337/api/photos?populate=image",
+          "https://photo-features-strapi.onrender.com/api/photos?populate=image",
         );
 
         const formattedPhotos = res.data.data.map((photo) => ({
           id: photo.id,
           image: photo.image?.url
-            ? `http://localhost:1337${photo.image.url}`
+            ? `https://photo-features-strapi.onrender.com${photo.image.url}`
             : null,
           title: photo.title || "Untitled Photo",
           location: "NITK",
           date: photo.capturedDate || photo.createdAt,
           photographer: photo.capturedBy?.username || "PClub",
           link: photo.image?.url
-            ? `http://localhost:1337${photo.image.url}`
+            ? `https://photo-features-strapi.onrender.com${photo.image.url}`
             : "#",
         }));
         console.log("FORMATTED PHOTOS:", formattedPhotos);
