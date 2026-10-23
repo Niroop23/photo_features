@@ -13,7 +13,12 @@
   "attributes": {
     "EventId": {
       "type": "string",
+      "required": true,
       "unique": true
+    },
+    "Title": {
+      "type": "string",
+      "required": true
     },
     "EventName": {
       "type": "string",
@@ -21,18 +26,45 @@
     },
     "description": {
       "type": "text",
-      "required": false
+      "required": true
     },
     "location": {
       "type": "string",
-      "default": "NITK, Surathkal, Karnataka"
+      "required": true
+    },
+    "locationLink": {
+      "type": "string",
+      "required": false
     },
     "dateTime": {
-      "type": "datetime"
+      "type": "datetime",
+      "required": true
     },
     "isPClubEvent": {
       "type": "boolean",
+      "required": true,
       "default": false
-    }
+    },
+    
+"portfolioLink": {
+  "type": "string",
+  "required": false
+},
+
+    "thumbnailPic": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files"
+      ]
+    },
+    "posts": {
+  "type": "relation",
+  "relation": "oneToMany",
+  "target": "api::post.post",
+  "mappedBy": "event"
+}
   }
 }

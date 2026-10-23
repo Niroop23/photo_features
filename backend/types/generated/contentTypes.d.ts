@@ -459,6 +459,45 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiEventGalleryPhotoEventGalleryPhoto
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'event_gallery_photos';
+  info: {
+    displayName: 'Event Gallery Photo';
+    pluralName: 'event-gallery-photos';
+    singularName: 'event-gallery-photo';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    capturedDate: Schema.Attribute.Date;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    event: Schema.Attribute.Relation<'manyToOne', 'api::event.event'>;
+    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::event-gallery-photo.event-gallery-photo'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    uploadedBy: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    visibility: Schema.Attribute.Enumeration<['public', 'private']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'public'>;
+  };
+}
+
 export interface ApiEventEvent extends Struct.CollectionTypeSchema {
   collectionName: 'events';
   info: {
@@ -473,20 +512,112 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    dateTime: Schema.Attribute.DateTime;
-    description: Schema.Attribute.Text;
-    EventId: Schema.Attribute.String & Schema.Attribute.Unique;
+    dateTime: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    EventId: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     EventName: Schema.Attribute.String & Schema.Attribute.Required;
-    isPClubEvent: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    isPClubEvent: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::event.event'> &
       Schema.Attribute.Private;
-    location: Schema.Attribute.String &
-      Schema.Attribute.DefaultTo<'NITK, Surathkal, Karnataka'>;
+    location: Schema.Attribute.String & Schema.Attribute.Required;
+    locationLink: Schema.Attribute.String;
+    portfolioLink: Schema.Attribute.String;
+    posts: Schema.Attribute.Relation<'oneToMany', 'api::post.post'>;
+    publishedAt: Schema.Attribute.DateTime;
+    thumbnailPic: Schema.Attribute.Media<'images' | 'files'>;
+    Title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiPhotoLikePhotoLike extends Struct.CollectionTypeSchema {
+  collectionName: 'photo_likes';
+  info: {
+    displayName: 'Photo Likes';
+    pluralName: 'photo-likes';
+    singularName: 'photo-like';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::photo-like.photo-like'
+    > &
+      Schema.Attribute.Private;
+    photo: Schema.Attribute.Relation<'manyToOne', 'api::photo.photo'>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiPhotoPhoto extends Struct.CollectionTypeSchema {
+  collectionName: 'photos';
+  info: {
+    displayName: 'Photos';
+    pluralName: 'photos';
+    singularName: 'photo';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    capturedBy: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    capturedDate: Schema.Attribute.Date;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    likesCount: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::photo.photo'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    tag: Schema.Attribute.Enumeration<
+      [
+        'Event',
+        'Workshop',
+        'Portrait',
+        'Nature',
+        'Street',
+        'Wildlife',
+        'Sports',
+        'Club Activity',
+        'Other',
+      ]
+    >;
+    title: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    uploadedBy: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    visibility: Schema.Attribute.Enumeration<['public', 'private']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'private'>;
   };
 }
 
@@ -993,6 +1124,8 @@ export interface PluginUsersPermissionsUser
     draftAndPublish: false;
   };
   attributes: {
+    appRole: Schema.Attribute.Enumeration<['user', 'photographer', 'admin']> &
+      Schema.Attribute.DefaultTo<'user'>;
     avatar: Schema.Attribute.Media<'images'>;
     bio: Schema.Attribute.Text;
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1006,7 +1139,10 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    googleId: Schema.Attribute.String & Schema.Attribute.Unique;
+    googlePicture: Schema.Attribute.String;
     instagram: Schema.Attribute.String;
+    isNitk: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1020,7 +1156,6 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
-    photographerRole: Schema.Attribute.String;
     posts: Schema.Attribute.Relation<'oneToMany', 'api::post.post'>;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
@@ -1053,7 +1188,10 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::category.category': ApiCategoryCategory;
+      'api::event-gallery-photo.event-gallery-photo': ApiEventGalleryPhotoEventGalleryPhoto;
       'api::event.event': ApiEventEvent;
+      'api::photo-like.photo-like': ApiPhotoLikePhotoLike;
+      'api::photo.photo': ApiPhotoPhoto;
       'api::post.post': ApiPostPost;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

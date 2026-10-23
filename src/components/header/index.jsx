@@ -4,9 +4,10 @@ import { FiCamera } from "react-icons/fi";
 import { FaRegUser } from "react-icons/fa";
 import { AiOutlineClose, AiOutlineMenu } from 'react-icons/ai'
 import { useState } from "react";
-import { useTheme } from "../../context/ThemeContext"
+import { useTheme } from "../../pages/context/ThemeContext"
 import Button from "../Button"
 import { navigateSmooth } from "../../utils/helperFunctions"
+import AuthTest from "../auth/AuthTest";
 
 const navigationLinks = [
     {
@@ -88,9 +89,7 @@ export default function Header() {
                     <AiOutlineMenu size={20} />
                 </div>
                 <div className="hidden md:block">
-                    <Button variant="secondary" size="sm" icon={<FaRegUser />}>
-                        Club Member
-                    </Button>
+                    <AuthTest />
                 </div>
             </header>
 
